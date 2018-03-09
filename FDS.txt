@@ -1,0 +1,91 @@
+
+                                                     FUNCTIONAL  DEPENDENCIES    
+                                                                                                                                 
+                                                                                                                            
+1) OWNER
+       ---->OWNER(OWNER_ID,OWNER_NAME,OWNER_PH_NO,OWNER_EMAIL)
+                a) OWNER_ID ----->OWNER_NAME ,
+                b) OWNER_ID ----->OWNER_PH_NO,
+                c)   OWNER_ID ----->OWNER_EMAIL,
+    ----> OWNER_ID  is  the  key  and  the table is in BCNF as the key(OWNER_ID) functionally determines all the other attributes.
+
+2)DEALER
+   ------>DEALER(DEALER_ID,DEALER_NAME,OWNER_ID,DEALER_PH_NO,DEALER_EMAIL,CITY,DEALER_COMMISSION)
+              a)DEALER_ID ----->DEALER_NAME,
+              b)DEALER_ID----->OWNER_ID,
+              c)DEALER_ID----->DEALER_PH_NO,
+             d)DEALER_ID ------>DEALER_EMAIL,
+             e)DEALER_ID ------>CITY,
+             f) DEALER_ID ----->DEALER_COMMISSION,
+ ----> DEALER_ID  is  the  key  and  the table is in BCNF as the key(DEALER_ID) functionally determines all the other attributes.
+
+3)DEALS_ABOUT
+   ------>DEALS_ABOUT(DEALER_ID,VEH_ID)
+            a)(DEALER_ID,VEH_ID) -----> DEALER_ID,
+            b)(DEALER_ID,VEH_ID) ----->VEH_ID,
+     ----> (DEALER_ID,VEH_ID)   is  the  key  and  the table is in BCNF as the key (DEALER_ID,VEH_ID) functionally determines all the other attributes.
+
+4)VEHICLE
+   ------>VEHICLE(VEH_ID,VEH_NAME,VEH_TYPE_ID,BRAND,PRICE_PER_PAY)
+            a)VEH_ID ----->VEH_NAME,
+            b)VEH_ID ----->VEH_TYPE_ID,
+            c)VEH_ID ----->BRAND,
+           d)VEH_ID ----->PRICE_PER_PAY,
+----> VEH_ID  is  the  key  and  the table is in BCNF as the key(VEH_ID) functionally determines all the other attributes.
+
+5)VEHICLE_TYPE
+   ------>VEHICLE(VEH_TYPE_ID,TYPE_NAME,DISCOUNT , VEHICLE_SPEED_LIMT,PENALTY)
+            a)VEH_TYPE_ID  ----->VEH_NAME,
+            b)VEH_TYPE_ID  ----->DISCOUNT,
+            c)VEH_TYPE_ID  ----->VEHICLE_SPEED_LIMT,
+           d)VEH_TYPE_ID  ----->PENALTY,
+----> VEH_TYPE_ID  is  the  key  and  the table is in BCNF as the key(VEH_TYPE_ID) functionally determines all the other attributes.
+
+6)ISSUE_LOG
+    ----->ISSUE_LOG(ISSUE_DATE,RETUEN_DATE,VEH_ID , DEALER_ID)
+               a)(ISSUE_DATE ,VEH_ID,DEALER_ID)----->RETURN DATE.
+   ----->  (ISSUE_DATE ,VEH_ID,DEALER_ID) is  the  key  and  the table is in BCNF as the key(ISSUE_DATE ,VEH_ID,DEALER_ID) functionally                         determines all the other attributes.
+
+7)HAS
+    HAS(DEAL_ID,ISSUE_DATE)
+   a) (DEAL_ID,ISSUE_DATE) ----->DEAL_ID,
+   b) (DEAL_ID,ISSUE_DATE) ----->ISSUE_ID,
+------> (DEAL_ID,ISSUE_DATE) is key and its in BCNF as the key funtionally determines all the attributes.
+
+8)DEALS_WITH
+  ------->  DEALS_WITH(VEH_ID,CUST_DATE)
+   a) (VEH_ID,CUST_DATE) ----->VEH_ID,
+   b) (VEH_ID,CUST_DATE) ----->CUST_ID,
+------> (VEH_ID,CUST_DATE) is key and its in BCNF as the key(VEH_ID,CUST_DATE)  funtionally determines all the attributes.
+
+9)CUSTOMER
+   ----->  CUSTOMER(CUST_ID,FNAME,LNAME,DOB,DEALER_ID,AADHAR,CUST_PH_NO,CUST_EMAIL)
+   a)(CUST_ID,DEALER_ID)  ------>FNAME,
+   b)(CUST_ID,DEALER_ID)  ------>LNAME,
+   c)(CUST_ID,DEALER_ID)  ------>DOB,
+   d)(CUST_ID,DEALER_ID)  ------>DEALER_ID,
+   e)(CUST_ID,DEALER_ID)  ------>AADHAR,
+  f)(CUST_ID,DEALER_ID)  ------>CUST_PH_NO,
+  g)(CUST_ID,DEALER_ID) -----> CUST_EMAIL,
+ h)(CUST_ID,DEALER_ID) -----> CUST_ID,
+------>(CUST_ID,DEALER_ID) is key and its in BCNF as the key(CUST_ID,DEALER_ID)  funtionally determines all the attributes.
+
+10)PAYMENT_DETAILS
+    ------>  PAYMENT_DETAILS(PAY_ID,DEALER_ID,CUST_ID,MODE_OF_PAYMENT,TOTAL_PRICE,PENALTY_COUNT,CUST_NATURE)
+          a)PAY_ID ------>DEALER_ID,
+         b)PAY_ID ------>CUST_ID,
+         c)PAY_ID ------>MODE_OF_PAYMENT,
+        d)PAY_ID ------>TOTAL_PRICE,
+        e)PAY_ID ------>PENALTY_COUNT,
+        f)PAY_ID ------>CUST_NATURE,
+------>PAY_ID is key and its in BCNF as the key(PAY_ID)  funtionally determines all the attributes.
+
+ 11)FEEDBACK
+-------> FEEDBACK(FEEDBACK_ID ,OWNERS_ID , CUSTOMER_ID ,OPINION , RATING )
+          a)FEEDBACK_ID ------>OWNERS_ID,
+          b)FEEDBACK_ID ------>CUSTOMER_ID,
+          c)FEEDBACK_ID ------>OPINION,
+          d)FEEDBACK_ID ------>RATING,
+------>FEEDBACK_ID is key and its in BCNF as the key(FEEDBACK_ID) funtionally determines all the attributes.
+
+
