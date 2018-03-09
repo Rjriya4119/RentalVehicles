@@ -1,0 +1,233 @@
+#include <stdio.h>
+#include <string.h>
+#include <libpq-fe.h>
+ 
+void ExecuteQuery()
+{
+int n;
+printf("enter your choice\n");
+printf("1.List all the customers who took more than 8 vehicles .\n");
+printf("2.Show the  dealer_id    who got a commission of more than RS 5000  AND penalty count is 5.\n");
+printf("3. Show the  vehicle_id  along with the customer_id ,BRAND,PENALTY,COMMENT, who got a discount of LESS than RS 2200 .\n");
+printf("4.The dealer_id ,vehicle id ,type _id  issued  on 03/06/2017  to 03/06/2017 with  penalty  of  300.\n");
+printf("5. Show the name and type of vehicle which is being rented between 03/03/2017 AND'03/05/2017'  with a penalty COUNT 3 ,total price is more than 10,000 .\n");
+printf("6. What is the max commission the dealer gets.\n");
+printf("7. List the  id of the customer  and   AGE is less than 25 and penalty count is more than 10 and nature is bad.\n");
+printf("8. Mention all the veh_id and cust_id where total price is less than Rs 19000 and rating is less than 4.\n");
+printf("9. Show the   customer_id ,fname,lanme and custmor nature whose mode of payment is cash.\n");
+printf("10. Name all of the customers who took GUJ1900  who was his/her dealer.\n");
+scanf("%d",&n);
+if(n==1){
+EXEC SQL BEGIN DECLARE SECTION;
+		int c;
+		int d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT  CUST_ID , COUNT(VEH_ID) FROM DEALS_WITH GROUP BY CUST_ID  HAVING  COUNT(VEH_ID)>8;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :c,:d;
+	printf("%d %d\n",c,d);	
+	}
+	}
+if(n==2){
+	EXEC SQL BEGIN DECLARE SECTION;
+		char c[100];
+		int d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT DEALER.DEALER_ID, PAYMENT_DETAILS.PENALTY_COUNT FROM DEALER JOIN PAYMENT_DETAILS ON ( DEALER.DEALER_ID = PAYMENT_DETAILS.DEALER_ID )  WHERE (TOTAL_PRICE - TOTAL_PRICE * DEALER_COMMISSION >5000) AND PENALTY_COUNT >5;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :c,:d;
+	printf("%s %d\n",c,d);	
+	}
+	}
+if(n==3){
+EXEC SQL BEGIN DECLARE SECTION;
+		int c;
+		char vid[20], brand[20], nat[10];
+		int d;
+		float dis;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT DEALS_WITH.CUST_ID,VEHICLE.VEH_ID ,BRAND ,PENALTY,CUST_NATURE, DISCOUNT  FROM  (((VEHICLE NATURAL JOIN VEHICLE_TYPE) NATURAL JOIN DEALS_WITH) NATURAL JOIN PAYMENT_DETAILS) WHERE TOTAL_PRICE-TOTAL_PRICE*DISCOUNT < 2200 ;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :c,:vid,:brand,:d,:nat,:dis;
+	printf("%d\t %s\t %s\t %d\t %s\t %f\n",c,vid,brand,d,nat,dis);	
+	}
+	}
+if(n==4){
+	EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50],c[50];
+		int d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+	EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT ISSUE_LOG.DEALER_ID,VEHICLE.VEH_ID, VEHICLE_TYPE.TYPE_ID FROM ((VEHICLE NATURAL JOIN ISSUE_LOG) NATURAL JOIN VEHICLE_TYPE) WHERE ISSUE_DATE='03/06/2017' AND RETURN_DATE='03/09/2017' AND PENALTY=300 ;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c;
+	printf("%s %s %s\n",a,b,c);	
+	}
+	}
+if(n==5){
+	EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50],c[50];
+		int d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+	EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT  VEHICLE.VEH_NAME,VEHICLE.VEH_ID,ISSUE_LOG.DEALER_ID ,VEHICLE.TYPE_ID FROM (((VEHICLE NATURAL JOIN ISSUE_LOG) NATURAL JOIN VEHICLE_TYPE ) NATURAL JOIN PAYMENT_DETAILS) WHERE ISSUE_DATE between '03/03/2017' AND '03/05/2017' AND PENALTY_COUNT=3 AND TOTAL_PRICE>10000;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c;
+	printf("%s %s %s\n",a,b,c);	
+	}
+	}
+if(n==6){
+ EXEC SQL BEGIN DECLARE SECTION;
+		float a;
+	
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT  MAX(TOTAL_PRICE-TOTAL_PRICE*DEALER_COMMISSION) FROM DEALER NATURAL JOIN PAYMENT_DETAILS ;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a;
+	printf("%f\n",a);	
+	}
+	}
+if(n==7){
+	EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50],c[50];
+		int d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query,"SELECT  CUSTOMER.CUST_ID ,FNAME,LNAME ,PENALTY_COUNT FROM CUSTOMER  JOIN PAYMENT_DETAILS ON(CUSTOMER.CUST_ID=PAYMENT_DETAILS.CUST_ID) WHERE DATE_PART('year', '2017-04-15'::date) - DATE_PART('year', DOB::date) < 25 AND PENALTY_COUNT > 10 AND CUST_NATURE='BAD';");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c,:d;
+	printf("%s %s %s %d\n",a,b,c,d);	
+	}
+	}
+if(n==8){
+EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50];
+		int c;
+		float d;
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query," select distinct customer.cust_id , veh_id,rating ,total_price from (((payment_details join customer ON (payment_details.cust_id=customer.cust_id)) join feedback on(customer.cust_id=feedback.customer_id)) join deals_with on(customer.cust_id=deals_with.cust_id)) where rating<4 and total_price>19000;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c,:d;
+	printf("%s %s %d %f\n",a,b,c,d);	
+	}
+	}
+if(n==1){
+	EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50],c[50],d[50];
+		
+		
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query," SELECT CUSTOMER.CUST_ID, FNAME, LNAME, CUST_NATURE FROM PAYMENT_DETAILS JOIN CUSTOMER ON(PAYMENT_DETAILS.CUST_ID=CUSTOMER.CUST_ID) WHERE MODE_OF_PAYMENT='CASH';");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c,:d;
+	printf("%s %s %s %s\n",a,b,c,d);	
+	}
+	}
+if(n==10){
+EXEC SQL BEGIN DECLARE SECTION;
+		char a[50],b[50],c[50],d[50],e[50];
+		
+		
+		char query[100];
+		
+		EXEC SQL END DECLARE SECTION;
+EXEC SQL CONNECT TO "postgres@127.0.0.1" USER "postgres" IDENTIFIED BY "postgres";
+	EXEC SQL SET SEARCH_PATH TO RENTAL;
+	strcpy(query," SELECT FNAME,LNAME ,DEALER.DEALER_ID,DEALER.DEALER_NAME,DEALER.CITY FROM((CUSTOMER JOIN DEALS_WITH ON(CUSTOMER.CUST_ID=DEALS_WITH.CUST_ID)) AS CUST_DEAL  JOIN DEALER ON(CUST_DEAL.DEALER_ID=DEALER.DEALER_ID) ) WHERE VEH_ID='GUJ1900' ;");
+	EXEC SQL PREPARE query_prepare FROM :query;
+	//EXEC SQL DECLARE emp_cur CURSOR FOR query_prepare;
+	EXEC SQL OPEN emp_cur;
+	while(sqlca.sqlcode == 0){
+	EXEC SQL FETCH emp_cur INTO :a,:b,:c,:d,:e;
+	printf("%s %s %s %s %s\n",a,b,c,d,e);	
+	}
+}
+	
+}
+void ExecuteUpdate()
+{
+EXEC SQL BEGIN DECLARE SECTION;
+char query[1000];
+EXEC SQL END DECLARE SECTION;
+printf("ENTER QUERY : ");
+	char tc;
+	scanf("%c",&tc);
+	fgets (query, 1000, stdin);
+	EXEC SQL PREPARE query_prep FROM :query;
+	EXEC SQL EXECUTE query_prep;
+	EXEC SQL COMMIT;
+	printf("QUERY EXECUTED\n");
+}
+int main()
+{
+int ch;
+printf("enter your choice\n");
+printf("1. select\n");
+printf("2. insert and update\n");
+scanf("%d",&ch);
+if(ch==1)
+ExecuteQuery();
+if(ch==2)
+ExecuteUpdate();
+return 0;
+}
