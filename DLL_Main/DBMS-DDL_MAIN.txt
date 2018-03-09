@@ -1,0 +1,144 @@
+CREATE SCHEMA RENTAL;
+SET SEARCH_PATH TO RENTAL;
+
+     
+CREATE  TABLE  OWNERS (
+	OWNERS_ID VARCHAR(10) NOT NULL UNIQUE ,
+	OWNERS_NAME VARCHAR(30)  NOT NULL ,
+	OWNERS_PH_NO VARCHAR(10) NOT NULL ,
+	OWNERS_EMAIL VARCHAR(50) NOT NULL ,
+	PRIMARY KEY (OWNERS_ID)
+	);
+
+   CREATE TABLE DEALER (
+                    DEALER_ID VARCHAR(10) NOT NULL,
+                    DEALER_NAME VARCHAR(20) NOT NULL,
+                   OWNERS_ID VARCHAR (10) NOT NULL,
+                   DEALER_EMAIL VARCHAR (50) NOT NULL UNIQUE,
+                   DEALER_PH_NO VARCHAR (10) NOT NULL,
+                   CITY VARCHAR (30) NOT NULL,
+                   DEALER_COMMISSION  DECIMAL(5,2)  NOT NULL,
+                   PRIMARY KEY(DEALER_ID),
+        FOREIGN KEY (OWNERS_ID) REFERENCES  OWNERS(OWNERS_ID)
+ );
+
+
+
+
+CREATE TABLE DEALS_ABOUT (
+                           DEALER_ID VARCHAR(10) NOT NULL,
+                           VEH_ID VARCHAR(10) NOT NULL,
+                           PRIMARY KEY(DEALER_ID, VEH_ID)
+                      );
+    
+    
+    
+
+
+
+CREATE TABLE CUSTOMER (
+                          CUST_ID VARCHAR(10) NOT NULL,
+                          FNAME VARCHAR(20) NOT NULL,
+                          LNAME VARCHAR(20) NOT NULL,
+                       DOB DATE NOT NULL,
+                       DEALER_ID VARCHAR(20) NOT NULL,
+                     AADHAR_NO VARCHAR(20) NOT NULL,
+                      CUST_PH_NO BIGINT NOT NULL,
+                        CUST_EMAIL VARCHAR(50) NOT NULL UNIQUE,
+                         PRIMARY KEY (CUST_ID),
+
+FOREIGN KEY (DEALER_ID) REFERENCES  DEALER(DEALER_ID)
+);
+
+
+
+
+CREATE TABLE HAS (
+                 DEALER_ID VARCHAR(10) NOT NULL ,
+                 ISSUE_DATE  DATE  NOT NULL,
+                  PRIMARY KEY (DEALER_ID ,ISSUE_DATE)
+   
+                        );
+
+
+
+        
+
+    
+    
+
+
+
+CREATE TABLE VEHICLE_TYPE (
+                              TYPE_ID VARCHAR(20) NOT NULL,
+                             VEH_TYPE_NAME VARCHAR(20) NOT NULL,
+                              DISCOUNT  DECIMAL(10,2) NOT NULL,
+                             PENALTY INTEGER NOT NULL,
+                            VEH_SPEED_LIMIT  INTEGER NOT NULL,
+                             PRIMARY KEY (TYPE_ID)
+);
+
+CREATE TABLE VEHICLE (
+                         VEH_ID VARCHAR(10) NOT NULL,
+                         VEH_NAME VARCHAR(20) NOT NULL,
+                       TYPE_ID VARCHAR(20) NOT NULL,
+                        BRAND VARCHAR(20) NOT NULL,
+                      PRICE_PER_DAY DECIMAL(10,4)   NOT NULL,
+                      PRIMARY KEY(VEH_ID),
+                      FOREIGN KEY (TYPE_ID) REFERENCES  VEHICLE_TYPE (TYPE_ID)
+
+);
+
+CREATE TABLE DEALS_WITH(
+                                VEH_ID VARCHAR(10) NOT NULL,
+                                  CUST_ID VARCHAR(10) NOT NULL,
+                                PRIMARY KEY(VEH_ID,CUST_ID) 
+
+);
+
+
+
+
+
+CREATE TABLE  ISSUE_LOG (
+                      ISSUE_DATE DATE NOT NULL,
+                     RETURN_DATE DATE NOT NULL,
+                    DEALER_ID VARCHAR(10) NOT NULL,
+                    VEH_ID VARCHAR(10) NOT NULL,
+                   FOREIGN KEY (DEALER_ID) REFERENCES  DEALER(DEALER_ID),
+                  FOREIGN KEY (VEH_ID) REFERENCES  VEHICLE(VEH_ID)
+
+    );
+    
+    
+
+CREATE TABLE PAYMENT_DETAILS (
+                                          PAY_ID VARCHAR(10) NOT NULL,
+                                         DEALER_ID VARCHAR(10) NOT NULL ,
+                                       CUST_ID VARCHAR(10) NOT NULL ,
+                                        MODE_OF_PAYMENT VARCHAR(20) NOT NULL,
+                                      TOTAL_PRICE   DECIMAL(10,4 )    NOT NULL,
+                                      PENALTY_COUNT  INTEGER  ,
+                                     CUST_NATURE VARCHAR(10) NOT NULL,
+                                      PRIMARY KEY (PAY_ID),
+FOREIGN KEY (DEALER_ID) REFERENCES  DEALER(DEALER_ID),
+FOREIGN KEY (CUST_ID) REFERENCES     CUSTOMER(CUST_ID)
+
+
+	);
+    
+    
+CREATE TABLE FEEDBACK (
+                FEEDBACK_ID VARCHAR(10) NOT NULL,
+               OWNERS_ID VARCHAR(10) NOT NULL,
+                   CUSTOMER_ID VARCHAR(10) NOT NULL,
+                 OPINION CHAR(100) NOT NULL,
+                  RATING INTEGER NOT NULL,
+                    PRIMARY KEY (FEEDBACK_ID)
+
+
+    );
+
+
+
+
